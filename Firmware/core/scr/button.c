@@ -1,9 +1,9 @@
-#include "button_driver.h"
+#include "button.h"
 #include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-#define BUTTON_PIN     16
+#define BUTTON_PIN  16
 
 void button_init()
 {
@@ -14,20 +14,17 @@ void button_init()
 int button_read()
 {
     static int last = 1;
-    int current = gpio_get_level(BUTTON_PIN);
+    int now = gpio_get_level(BUTTON_PIN);
 
-    // Active LOW
-    if (current == 0 && last == 1)
+    if (now == 0 && last == 1)
     {
         last = 0;
         vTaskDelay(20 / portTICK_PERIOD_MS);
-        return 1;
+        return 1;   // pressed
     }
 
-    if (current == 1)
-    {
+    if (now == 1)
         last = 1;
-    }
 
     return 0;
 }
